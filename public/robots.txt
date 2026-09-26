@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://iqra0076r.github.io/Gippi/sitemap.xml

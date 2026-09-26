@@ -4,7 +4,8 @@ import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from
 import { products, categories } from './data'
 import './styles.css'
 
-const money = v => `$${v}`
+const money = v => `${v}`
+const productHref = p => `./digital-products/${p.seoSlug}/`
 
 function Sparkle(){ return <span className="sparkle" aria-hidden>✦</span> }
 
@@ -64,6 +65,7 @@ function App(){
       <EditorialBreak/>
       <Why/>
       <Bundle addAll={()=>{setCart(products);setCartOpen(true)}}/>
+      <SeoDiscovery/>
       <FAQ/>
       <Newsletter/>
     </main>
@@ -92,9 +94,9 @@ function Hero({onExplore}){
       <div className="mini-proof"><span>8 flagship systems</span><span>Instant access</span><span>Global digital delivery</span></div>
     </div>
     <motion.div className="hero-stage" style={{rotateX:rx,rotateY:ry,transformPerspective:1000}}>
-      <motion.div className="hero-card hero-main" initial={{opacity:0,scale:.94,y:24}} animate={{opacity:1,scale:1,y:0}} transition={{duration:.7}}><img src="./products/business-command.webp" alt="Gippi Business Command Center Pro"/></motion.div>
-      <motion.div className="hero-card hero-float one" animate={{y:[0,-14,0],rotate:[-8,-5,-8]}} transition={{duration:5,repeat:Infinity,ease:'easeInOut'}}><img src="./products/content-empire.webp" alt="Content Empire Pro"/></motion.div>
-      <motion.div className="hero-card hero-float two" animate={{y:[0,12,0],rotate:[8,5,8]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}><img src="./products/life-os.webp" alt="Life OS Elite"/></motion.div>
+      <motion.div className="hero-card hero-main" initial={{opacity:0,scale:.94,y:24}} animate={{opacity:1,scale:1,y:0}} transition={{duration:.7}}><img src="./products/business-command.svg" alt="Business spreadsheet dashboard template and CRM system by Gippi" width="800" height="1000" fetchPriority="high" decoding="async"/></motion.div>
+      <motion.div className="hero-card hero-float one" animate={{y:[0,-14,0],rotate:[-8,-5,-8]}} transition={{duration:5,repeat:Infinity,ease:'easeInOut'}}><img src="./products/content-empire.svg" alt="Editable Canva business template bundle for creators" width="800" height="1000" decoding="async"/></motion.div>
+      <motion.div className="hero-card hero-float two" animate={{y:[0,12,0],rotate:[8,5,8]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}><img src="./products/life-os.svg" alt="Premium digital planner and printable life organization system" width="800" height="1000" decoding="async"/></motion.div>
       <div className="orbit-badge"><b>Gippi</b><span>premium digital systems</span></div>
     </motion.div>
   </section>
@@ -104,12 +106,13 @@ function ValueRibbon(){return <div className="ticker-wrap"><div className="ticke
 
 function ProductCard({p,i,onQuick,onAdd}){
   return <motion.article layout initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.2}} transition={{delay:(i%4)*.05}} className="product-card">
-    <button className="visual" onClick={onQuick} aria-label={`View ${p.name}`}>
-      <img src={p.image} alt={p.name} loading="lazy"/>
+    <button className="visual" onClick={onQuick} aria-label={`Quick view ${p.name}`}>
+      <img src={p.image} alt={p.imageAlt || p.name} loading="lazy" decoding="async" width="800" height="1000"/>
       <span className="quick">Quick view ↗</span>
     </button>
     <div className="product-meta">
-      <p className="eyebrow">{p.eyebrow}</p><h3>{p.name}</h3><p>{p.tagline}</p>
+      <p className="eyebrow">{p.eyebrow}</p><h3><a href={productHref(p)}>{p.name}</a></h3><p>{p.tagline}</p>
+      <a className="seo-details" href={productHref(p)}>View full product details →</a>
       <div className="price-row"><div><b>{money(p.price)}</b><s>{money(p.compareAt)}</s></div><button className="add" onClick={onAdd}>Add to cart +</button></div>
     </div>
   </motion.article>
@@ -135,8 +138,23 @@ function Why(){return <section id="why" className="why section">
 </section>}
 
 function Bundle({addAll}){return <section id="bundle" className="bundle section">
-  <div className="bundle-art"><div className="stack s1"><img src="./products/content-empire.webp"/></div><div className="stack s2"><img src="./products/business-command.webp"/></div><div className="stack s3"><img src="./products/course-creator.webp"/></div></div>
+  <div className="bundle-art"><div className="stack s1"><img src="./products/content-empire.svg"/></div><div className="stack s2"><img src="./products/business-command.svg"/></div><div className="stack s3"><img src="./products/course-creator.svg"/></div></div>
   <div className="bundle-copy"><p className="kicker">The complete Gippi collection</p><h2>One purchase.<br/><em>Eight premium systems.</em></h2><p>Build your business, organize your life, publish content, launch courses, manage your career and create faster—with one cohesive digital toolkit.</p><div className="bundle-price"><b>$149</b><s>$521 combined value</s></div><button className="btn dark" onClick={addAll}>Add complete collection <span>↗</span></button></div>
+</section>}
+
+function SeoDiscovery(){return <section className="seo-discovery section" aria-labelledby="shop-by-workflow">
+  <div className="section-head"><div><p className="kicker">Shop by workflow</p><h2 id="shop-by-workflow">Find the right <em>digital system</em> faster.</h2></div><p className="section-copy">Explore focused collections for business operations, productivity, creative publishing and career growth, plus practical guides explaining which digital product fits each workflow.</p></div>
+  <div className="seo-link-grid">
+    <a href="./collections/business-tools/"><span>Business tools</span><strong>Spreadsheet dashboards, CRM, invoicing & course creation</strong><small>Explore business digital products →</small></a>
+    <a href="./collections/productivity-planners/"><span>Productivity</span><strong>Digital planners, Notion systems & life organization</strong><small>Explore productivity systems →</small></a>
+    <a href="./collections/creative-templates/"><span>Creative templates</span><strong>Canva templates, ebook systems & design assets</strong><small>Explore creative digital products →</small></a>
+    <a href="./collections/career-tools/"><span>Career tools</span><strong>ATS resumes, CV templates & job-search systems</strong><small>Explore career resources →</small></a>
+  </div>
+  <div className="guide-links">
+    <a href="./guides/best-digital-business-tools/">Best digital business tools for small businesses</a>
+    <a href="./guides/digital-planner-vs-notion-vs-spreadsheet/">Digital planner vs Notion vs spreadsheet</a>
+    <a href="./guides/how-to-build-a-small-business-operating-system/">How to build a small-business operating system</a>
+  </div>
 </section>}
 
 function FAQ(){const items=[['How are products delivered?','Digitally, immediately after purchase through the checkout provider connected to the store.'],['Can I edit the files?','Where a product is designed to be editable, the package includes editable formats or clear access instructions.'],['Can I resell the original files?','No. Standard products are licensed for personal and internal business use unless a product-specific commercial license says otherwise.'],['Do I need special software?','Each product clearly identifies its compatible software before purchase. Many include PDF, spreadsheet or editable-template formats.']];return <section id="faq" className="faq section"><p className="kicker">Questions, answered</p><h2>Everything you need to know.</h2><div className="faq-list">{items.map(([q,a])=><details key={q}><summary>{q}<span>+</span></summary><p>{a}</p></details>)}</div></section>}
@@ -147,6 +165,6 @@ function QuickView({p,onClose,onAdd}){const [img,setImg]=useState(p.gallery[0]);
 
 function CartDrawer({cart,setCart,total,onClose}){return <motion.div className="cart-layer" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.aside className="cart-drawer" initial={{x:'100%'}} animate={{x:0}} exit={{x:'100%'}} transition={{type:'spring',stiffness:240,damping:28}}><div className="cart-head"><div><p className="kicker">Your collection</p><h2>Cart <span>{cart.length}</span></h2></div><button className="close" onClick={onClose}>×</button></div><div className="cart-items">{cart.length===0?<div className="empty"><span>◇</span><h3>Your cart is beautifully empty.</h3><p>Add a premium system to get started.</p></div>:cart.map(p=><div className="cart-item" key={p.id}><img src={p.image}/><div><b>{p.name}</b><span>{money(p.price)}</span></div><button onClick={()=>setCart(c=>c.filter(x=>x.id!==p.id))}>Remove</button></div>)}</div><div className="cart-footer"><div className="cart-total"><span>Total</span><b>{money(total)}</b></div><button className="btn dark full" onClick={()=>alert('Connect your preferred checkout URL in the store configuration to activate payments.')}>Continue to checkout ↗</button><small>Secure checkout URL can be connected to Payhip, Lemon Squeezy, Shopify or another provider.</small></div></motion.aside></motion.div>}
 
-function Footer(){return <footer><div className="footer-brand"><a className="brand" href="#top">Gippi<Sparkle/></a><p>Premium digital systems for brighter work.</p></div><div><b>Explore</b><a href="#collection">Shop</a><a href="#bundle">Complete suite</a><a href="#why">Why Gippi</a></div><div><b>Support</b><a href="#faq">FAQ</a><a href="#">License</a><a href="#">Digital delivery</a></div><div className="footer-bottom"><span>© 2026 Gippi</span><span>Designed for digital-first business.</span></div></footer>}
+function Footer(){return <footer><div className="footer-brand"><a className="brand" href="#top">Gippi<Sparkle/></a><p>Premium digital systems for brighter work.</p></div><div><b>Explore</b><a href="#collection">Shop</a><a href="#bundle">Complete suite</a><a href="#why">Why Gippi</a></div><div><b>Discover</b><a href="./collections/business-tools/">Business tools</a><a href="./collections/productivity-planners/">Productivity systems</a><a href="./collections/creative-templates/">Creative templates</a><a href="./collections/career-tools/">Career tools</a></div><div><b>Support</b><a href="#faq">FAQ</a><a href="./guides/best-digital-business-tools/">Guides</a><a href="#faq">Digital delivery</a></div><div className="footer-bottom"><span>© 2026 Gippi</span><span>Designed for digital-first business.</span></div></footer>}
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>)

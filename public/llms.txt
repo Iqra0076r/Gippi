@@ -1,0 +1,25 @@
+# Gippi
+Premium digital products, templates and productivity systems for creators, professionals and small businesses.
+
+Main site: https://iqra0076r.github.io/Gippi/
+
+Products:
+- Content Empire Pro: https://iqra0076r.github.io/Gippi/digital-products/canva-business-template-bundle/
+- Life OS Elite: https://iqra0076r.github.io/Gippi/digital-products/digital-planner-printable-life-system/
+- Business Command Center Pro: https://iqra0076r.github.io/Gippi/digital-products/business-spreadsheet-template-dashboard/
+- Notion OS Elite: https://iqra0076r.github.io/Gippi/digital-products/notion-business-productivity-template/
+- Course Creator Business OS: https://iqra0076r.github.io/Gippi/digital-products/course-creator-business-kit/
+- Ebook Studio Pro: https://iqra0076r.github.io/Gippi/digital-products/ebook-workbook-creator-template/
+- Career Command Center: https://iqra0076r.github.io/Gippi/digital-products/resume-cv-career-success-kit/
+- Design Asset Vault: https://iqra0076r.github.io/Gippi/digital-products/svg-png-design-asset-bundle/
+
+Collections:
+- Digital business tools for clearer operations and faster growth.: https://iqra0076r.github.io/Gippi/collections/business-tools/
+- Premium digital planning and productivity systems.: https://iqra0076r.github.io/Gippi/collections/productivity-planners/
+- Creative digital templates that look polished and work hard.: https://iqra0076r.github.io/Gippi/collections/creative-templates/
+- Career tools for a more organized job search.: https://iqra0076r.github.io/Gippi/collections/career-tools/
+
+Guides:
+- How to choose the best digital business tools for a small business: https://iqra0076r.github.io/Gippi/guides/best-digital-business-tools/
+- Digital planner vs Notion vs spreadsheet: which system fits your workflow?: https://iqra0076r.github.io/Gippi/guides/digital-planner-vs-notion-vs-spreadsheet/
+- How to build a simple small-business operating system: https://iqra0076r.github.io/Gippi/guides/how-to-build-a-small-business-operating-system/
