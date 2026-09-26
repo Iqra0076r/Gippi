@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /Gippi/admin/
 
-Sitemap: https://iqra0076r.github.io/Gippi/sitemap.xml
+Sitemap: https://iqra0076r.github.io/Gippi/sitemap.xml\nSitemap: https://hlmndkgflgutbigsxoml.supabase.co/functions/v1/gippi-sitemap\n
