@@ -17,6 +17,7 @@
     <nav id="adminNav" class="admin-nav hidden">
       <button data-view="overview" class="active">Overview</button>
       <button data-view="products">Products</button>
+      <button data-view="users">Users</button>
       <button data-view="socials">Social links</button>
     </nav>
     <div class="sidebar-bottom">
@@ -37,6 +38,8 @@
           <button id="showSignIn" class="active">Sign in</button>
           <button id="showSignUp">Create account</button>
         </div>
+        <button id="adminGoogleBtn" class="google-admin-btn" type="button"><span class="google-dot">G</span> Continue with Google</button>
+        <div class="auth-divider"><span>or use email</span></div>
         <form id="authForm">
           <label>Email<input id="authEmail" type="email" autocomplete="email" required></label>
           <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="8" required></label>
@@ -72,6 +75,7 @@
           <article><span>Published</span><strong id="metricPublished">0</strong><small>Visible on store</small></article>
           <article><span>Drafts</span><strong id="metricDrafts">0</strong><small>Hidden from buyers</small></article>
           <article><span>Socials</span><strong id="metricSocials">0</strong><small>Active public links</small></article>
+          <article><span>Users</span><strong id="metricUsers">0</strong><small>Registered accounts</small></article>
         </div>
         <div class="studio-card">
           <div><p class="eyebrow">Live management</p><h2>Changes publish without editing website code.</h2></div>
@@ -87,6 +91,11 @@
         <div class="table-wrap">
           <table><thead><tr><th>Product</th><th>Category</th><th>Status</th><th>Price</th><th>Order</th><th></th></tr></thead><tbody id="productRows"></tbody></table>
         </div>
+      </div>
+
+      <div id="usersView" class="panel-view hidden">
+        <div class="section-action"><div><p class="eyebrow">Supabase Auth customers</p><h2>Registered users</h2></div></div>
+        <div class="table-wrap"><table><thead><tr><th>User</th><th>Provider</th><th>Created</th><th>Last seen</th></tr></thead><tbody id="userRows"></tbody></table></div>
       </div>
 
       <div id="socialsView" class="panel-view hidden">

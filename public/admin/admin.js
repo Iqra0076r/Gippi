@@ -1,7 +1,7 @@
 const SUPABASE_URL='https://hlmndkgflgutbigsxoml.supabase.co';
 const SUPABASE_KEY='sb_publishable_eeu2iAtUCASeSrM6lX-NXQ_3MzJLf_Z';
 const SESSION_KEY='gippi-admin-session';
-let session=null, products=[], socials=[], authMode='signin';
+let session=null, products=[], socials=[], users=[], authMode='signin';
 
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -32,9 +32,25 @@ async function refreshSession(){
     return saveSession(data);
   }catch(e){clearSession();return null}
 }
+function consumeOAuthFragment(){
+  const raw=location.hash.startsWith('#')?location.hash.slice(1):''
+  if(!raw)return
+  const p=new URLSearchParams(raw)
+  if(!p.get('access_token'))return
+  session={access_token:p.get('access_token'),refresh_token:p.get('refresh_token'),user:null,expires_at:Math.floor(Date.now()/1000)+Number(p.get('expires_in')||3600)}
+  localStorage.setItem(SESSION_KEY,JSON.stringify(session))
+  history.replaceState(null,'',location.pathname+location.search)
+}
 async function restoreSession(){
-  try{session=JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch{session=null}
+  consumeOAuthFragment()
+  if(!session){try{session=JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch{session=null}}
   if(session&&session.expires_at&&session.expires_at<Math.floor(Date.now()/1000)+90) await refreshSession();
+  if(session&&!session.user){
+    try{
+      const r=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+session.access_token}})
+      if(r.ok){session.user=await r.json();localStorage.setItem(SESSION_KEY,JSON.stringify(session))}
+    }catch{}
+  }
   return session;
 }
 async function api(path,{method='GET',body=null,prefer='',rawBody=null,contentType='application/json'}={}){
@@ -55,11 +71,12 @@ async function isAdmin(){
   return Array.isArray(rows)&&rows.length>0;
 }
 async function loadData(){
-  const [p,s]=await Promise.all([
+  const [p,s,u]=await Promise.all([
     api('/rest/v1/gippi_products?select=*&order=sort_order.asc,created_at.asc'),
-    api('/rest/v1/gippi_social_links?select=*&order=sort_order.asc,created_at.asc')
+    api('/rest/v1/gippi_social_links?select=*&order=sort_order.asc,created_at.asc'),
+    api('/rest/v1/gippi_user_profiles?select=*&order=created_at.desc')
   ]);
-  products=p||[]; socials=s||[]; renderAll();
+  products=p||[]; socials=s||[]; users=u||[]; renderAll();
 }
 function setScreen(name){
   $('authView').classList.toggle('hidden',name!=='auth');
@@ -70,17 +87,18 @@ function setScreen(name){
   $('adminEmail').textContent=session?.user?.email||'';
 }
 function switchView(view){
-  ['overview','products','socials'].forEach(v=>$(v+'View').classList.toggle('hidden',v!==view));
+  ['overview','products','users','socials'].forEach(v=>$(v+'View').classList.toggle('hidden',v!==view));
   document.querySelectorAll('#adminNav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  $('viewTitle').textContent=view==='overview'?'Overview':view==='products'?'Products':'Social links';
-  $('newProductBtn').classList.toggle('hidden',view==='socials');
+  $('viewTitle').textContent=view==='overview'?'Overview':view==='products'?'Products':view==='users'?'Users':'Social links';
+  $('newProductBtn').classList.toggle('hidden',view==='socials'||view==='users');
 }
-function renderAll(){renderMetrics();renderProducts();renderSocials()}
+function renderAll(){renderMetrics();renderProducts();renderUsers();renderSocials()}
 function renderMetrics(){
   $('metricProducts').textContent=products.length;
   $('metricPublished').textContent=products.filter(p=>p.status==='published').length;
   $('metricDrafts').textContent=products.filter(p=>p.status==='draft').length;
   $('metricSocials').textContent=socials.filter(s=>s.is_active&&s.url).length;
+  $('metricUsers').textContent=users.length;
 }
 function currentFilteredProducts(){
   const q=$('productSearch').value.toLowerCase().trim(), st=$('productStatusFilter').value;
@@ -90,6 +108,10 @@ function renderProducts(){
   $('productRows').innerHTML=currentFilteredProducts().map(p=>'<tr><td><div class="product-cell"><img class="product-thumb" src="'+esc(p.image_url||'../products/design-vault.svg')+'" alt=""><div><strong>'+esc(p.title)+'</strong><div class="micro">'+esc(p.slug)+'</div></div></div></td><td>'+esc(p.category)+'</td><td><span class="status-pill '+esc(p.status)+'">'+esc(p.status)+'</span></td><td>'+money(p.price)+'</td><td>'+Number(p.sort_order||0)+'</td><td><div class="row-actions"><button data-edit="'+esc(p.id)+'">Edit</button><a href="../product/?slug='+encodeURIComponent(p.slug)+'" target="_blank">Preview</a></div></td></tr>').join('');
   document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openProduct(b.dataset.edit));
 }
+function renderUsers(){
+  $('userRows').innerHTML=users.map(u=>'<tr><td><div class="user-cell">'+(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':'<span>'+(esc((u.full_name||u.email||'U').slice(0,1).toUpperCase()))+'</span>')+'<div><strong>'+esc(u.full_name||'Customer')+'</strong><div class="micro">'+esc(u.email||'')+'</div></div></div></td><td><span class="status-pill published">'+esc(u.provider||'email')+'</span></td><td>'+formatDate(u.created_at)+'</td><td>'+formatDate(u.last_seen_at)+'</td></tr>').join('')||'<tr><td colspan="4" class="empty-row">No registered customers yet.</td></tr>'
+}
+function formatDate(value){if(!value)return '—';try{return new Date(value).toLocaleString([], {year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch{return '—'}}
 function renderSocials(){
   $('socialList').innerHTML=socials.map(s=>'<div class="social-row" data-social="'+esc(s.id)+'"><strong>'+esc(s.label||s.platform)+'</strong><input class="social-url" type="url" value="'+esc(s.url||'')+'" placeholder="https://..."><label class="check-row"><input class="social-active" type="checkbox" '+(s.is_active?'checked':'')+'> Live</label><input class="social-order" type="number" value="'+Number(s.sort_order||0)+'"><div><button class="save-social">Save</button> · <button class="delete-social">Delete</button></div></div>').join('');
   document.querySelectorAll('[data-social]').forEach(row=>{
@@ -178,6 +200,13 @@ async function boot(){
     else setScreen('claim');
   }catch(e){showNotice(e.message,true);setScreen('auth')}
 }
+$('adminGoogleBtn').onclick=()=>{
+  const redirectTo=location.origin+location.pathname
+  const url=new URL(SUPABASE_URL+'/auth/v1/authorize')
+  url.searchParams.set('provider','google')
+  url.searchParams.set('redirect_to',redirectTo)
+  location.assign(url.toString())
+};
 $('showSignIn').onclick=()=>{authMode='signin';$('showSignIn').classList.add('active');$('showSignUp').classList.remove('active');$('authSubmit').textContent='Sign in';$('authHelp').textContent='Only the claimed Gippi owner account can edit the store.'};
 $('showSignUp').onclick=()=>{authMode='signup';$('showSignUp').classList.add('active');$('showSignIn').classList.remove('active');$('authSubmit').textContent='Create account';$('authHelp').textContent='Create your account, verify the email if prompted, then claim the store with your one-time owner code.'};
 $('authForm').onsubmit=async e=>{
