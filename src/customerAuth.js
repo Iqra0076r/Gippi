@@ -80,7 +80,11 @@ export async function signUpCustomer({email,password,fullName}){
   const profile=await getProfile(session,user)
   return {session,user,profile}
 }
-export function startGoogleCustomerOAuth(){
+export async function startGoogleCustomerOAuth(){
+  const settingsResponse=await fetch(SUPABASE_URL+'/auth/v1/settings',{headers:{apikey:SUPABASE_KEY}})
+  if(!settingsResponse.ok) throw new Error('Google sign-in is temporarily unavailable.')
+  const settings=await settingsResponse.json()
+  if(!settings?.external?.google) throw new Error('Google sign-in is not enabled yet. Please use email sign in for now.')
   const redirectTo=location.origin+location.pathname
   const url=new URL(SUPABASE_URL+'/auth/v1/authorize')
   url.searchParams.set('provider','google')
