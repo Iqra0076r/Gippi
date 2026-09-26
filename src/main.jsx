@@ -280,7 +280,7 @@ function AccountModal({customer,profile,notice,onClose,onSignedIn,onSignedOut}){
           <button className="btn dark full" disabled={busy} onClick={logout}>Sign out</button>
         </div>:<>
           <div className="auth-switch"><button className={mode==='signin'?'active':''} onClick={()=>{setMode('signin');setMessage('')}}>Sign in</button><button className={mode==='signup'?'active':''} onClick={()=>{setMode('signup');setMessage('')}}>Create account</button></div>
-          <button className="google-auth-btn" onClick={()=>startGoogleCustomerOAuth()}><GoogleMark/><span>Continue with Google</span></button>
+          <button className="google-auth-btn" disabled={busy} onClick={async()=>{setBusy(true);setMessage('');try{await startGoogleCustomerOAuth()}catch(e){setMessage(e.message||'Google sign-in is unavailable.');setBusy(false)}}><GoogleMark/><span>Continue with Google</span></button>
           <div className="or-divider"><span>or continue with email</span></div>
           <form className="customer-auth-form" onSubmit={submit}>
             {mode==='signup'&&<label>Full name<input value={name} onChange={e=>setName(e.target.value)} autoComplete="name" placeholder="Your name" required/></label>}
