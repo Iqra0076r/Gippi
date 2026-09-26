@@ -1,11 +1,32 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import { createRoot } from 'react-dom/client'
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'motion/react'
-import { products, categories } from './data'
+import { products as fallbackProducts } from './data'
+import { fetchPublishedProducts, fetchActiveSocials } from './backend'
 import './styles.css'
 
-const money = v => `${v}`
-const productHref = p => `./digital-products/${p.seoSlug}/`
+const money = v => `${Number(v || 0).toFixed(Number(v || 0) % 1 ? 2 : 0)}`
+const productHref = p => `./product/?slug=${encodeURIComponent(p.seoSlug || p.slug || '')}`
+
+function fromDbProduct(p){
+  return {
+    id:p.id,
+    seoSlug:p.slug,
+    slug:p.slug,
+    name:p.title,
+    eyebrow:p.eyebrow || '',
+    category:p.category || 'Creative',
+    price:Number(p.price || 0),
+    compareAt:p.compare_at == null ? null : Number(p.compare_at),
+    image:p.image_url || './products/design-vault.svg',
+    imageAlt:p.image_alt || p.title,
+    gallery:[p.image_url || './products/design-vault.svg'],
+    tagline:p.tagline || '',
+    description:p.description || '',
+    features:Array.isArray(p.features) ? p.features : [],
+    checkoutUrl:p.checkout_url || ''
+  }
+}
 
 function Sparkle(){ return <span className="sparkle" aria-hidden>✦</span> }
 
@@ -16,11 +37,28 @@ function App(){
   const [cart,setCart]=useState(()=>JSON.parse(localStorage.getItem('gippi-cart')||'[]'))
   const [cartOpen,setCartOpen]=useState(false)
   const [menu,setMenu]=useState(false)
+  const [catalog,setCatalog]=useState(fallbackProducts)
+  const [socials,setSocials]=useState([])
 
   useEffect(()=>localStorage.setItem('gippi-cart',JSON.stringify(cart)),[cart])
-  const filtered=useMemo(()=>products.filter(p=>
+  useEffect(()=>{
+    let cancelled=false
+    ;(async()=>{
+      try{
+        const [dbProducts,dbSocials]=await Promise.all([fetchPublishedProducts(),fetchActiveSocials()])
+        if(cancelled) return
+        if(Array.isArray(dbProducts)&&dbProducts.length) setCatalog(dbProducts.map(fromDbProduct))
+        if(Array.isArray(dbSocials)) setSocials(dbSocials)
+      }catch(error){
+        console.warn('Gippi backend unavailable; using bundled catalog.',error)
+      }
+    })()
+    return ()=>{cancelled=true}
+  },[])
+  const filtered=useMemo(()=>catalog.filter(p=>
     (filter==='All'||p.category===filter) && (`${p.name} ${p.tagline} ${p.category}`).toLowerCase().includes(query.toLowerCase())
-  ),[filter,query])
+  ),[filter,query,catalog])
+  const liveCategories=useMemo(()=>['All',...new Set(catalog.map(p=>p.category).filter(Boolean))],[catalog])
 
   const add=p=>{
     setCart(c=>c.some(x=>x.id===p.id)?c:[...c,p])
@@ -53,7 +91,7 @@ function App(){
           <p className="section-copy">Not filler. Not basic downloads. Each system combines structure, design, automation and practical depth.</p>
         </div>
         <div className="shop-tools glass-soft">
-          <div className="chips">{categories.map(c=><button className={filter===c?'chip active':'chip'} onClick={()=>setFilter(c)} key={c}>{c}</button>)}</div>
+          <div className="chips">{liveCategories.map(c=><button className={filter===c?'chip active':'chip'} onClick={()=>setFilter(c)} key={c}>{c}</button>)}</div>
           <label className="search"><span>⌕</span><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search the collection"/></label>
         </div>
         <motion.div layout className="product-grid">
@@ -64,12 +102,12 @@ function App(){
       </section>
       <EditorialBreak/>
       <Why/>
-      <Bundle addAll={()=>{setCart(products);setCartOpen(true)}}/>
+      <Bundle addAll={()=>{setCart(catalog);setCartOpen(true)}}/>
       <SeoDiscovery/>
       <FAQ/>
       <Newsletter/>
     </main>
-    <Footer/>
+    <Footer socials={socials}/>
     <AnimatePresence>{quick&&<QuickView p={quick} onClose={()=>setQuick(null)} onAdd={()=>add(quick)}/>}</AnimatePresence>
     <AnimatePresence>{cartOpen&&<CartDrawer cart={cart} setCart={setCart} total={total} onClose={()=>setCartOpen(false)}/>}</AnimatePresence>
   </div>
@@ -113,7 +151,7 @@ function ProductCard({p,i,onQuick,onAdd}){
     <div className="product-meta">
       <p className="eyebrow">{p.eyebrow}</p><h3><a href={productHref(p)}>{p.name}</a></h3><p>{p.tagline}</p>
       <a className="seo-details" href={productHref(p)}>View full product details →</a>
-      <div className="price-row"><div><b>{money(p.price)}</b><s>{money(p.compareAt)}</s></div><button className="add" onClick={onAdd}>Add to cart +</button></div>
+      <div className="price-row"><div><b>{money(p.price)}</b>{p.compareAt!=null&&<s>{money(p.compareAt)}</s>}</div><button className="add" onClick={onAdd}>Add to cart +</button></div>
     </div>
   </motion.article>
 }
@@ -161,10 +199,10 @@ function FAQ(){const items=[['How are products delivered?','Digitally, immediate
 
 function Newsletter(){return <section className="newsletter section"><div><p className="kicker">Gippi dispatch</p><h2>New systems. Better workflows.<br/><em>Zero clutter.</em></h2></div><form onSubmit={e=>e.preventDefault()}><input type="email" placeholder="Email address" aria-label="Email address"/><button className="btn primary">Join the list ↗</button></form></section>}
 
-function QuickView({p,onClose,onAdd}){const [img,setImg]=useState(p.gallery[0]);return <motion.div className="modal-backdrop" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.div className="quick-modal" initial={{opacity:0,y:24,scale:.98}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:20,scale:.98}}><button className="close" onClick={onClose}>×</button><div className="quick-gallery"><img className="quick-main" src={img} alt={p.name}/>{p.gallery.length>1&&<div className="thumbs">{p.gallery.map(g=><button key={g} className={img===g?'active':''} onClick={()=>setImg(g)}><img src={g}/></button>)}</div>}</div><div className="quick-copy"><p className="eyebrow">{p.eyebrow}</p><h2>{p.name}</h2><p className="lead">{p.description}</p><ul>{p.features.map(f=><li key={f}>✓ {f}</li>)}</ul><div className="quick-buy"><div><b>{money(p.price)}</b><s>{money(p.compareAt)}</s></div><button className="btn dark" onClick={onAdd}>Add to cart</button></div><small>Digital product · instant delivery after checkout</small></div></motion.div></motion.div>}
+function QuickView({p,onClose,onAdd}){const [img,setImg]=useState(p.gallery[0]);return <motion.div className="modal-backdrop" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.div className="quick-modal" initial={{opacity:0,y:24,scale:.98}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:20,scale:.98}}><button className="close" onClick={onClose}>×</button><div className="quick-gallery"><img className="quick-main" src={img} alt={p.name}/>{p.gallery.length>1&&<div className="thumbs">{p.gallery.map(g=><button key={g} className={img===g?'active':''} onClick={()=>setImg(g)}><img src={g}/></button>)}</div>}</div><div className="quick-copy"><p className="eyebrow">{p.eyebrow}</p><h2>{p.name}</h2><p className="lead">{p.description}</p><ul>{p.features.map(f=><li key={f}>✓ {f}</li>)}</ul><div className="quick-buy"><div><b>{money(p.price)}</b>{p.compareAt!=null&&<s>{money(p.compareAt)}</s>}</div><button className="btn dark" onClick={onAdd}>Add to cart</button></div><small>Digital product · instant delivery after checkout</small></div></motion.div></motion.div>}
 
-function CartDrawer({cart,setCart,total,onClose}){return <motion.div className="cart-layer" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.aside className="cart-drawer" initial={{x:'100%'}} animate={{x:0}} exit={{x:'100%'}} transition={{type:'spring',stiffness:240,damping:28}}><div className="cart-head"><div><p className="kicker">Your collection</p><h2>Cart <span>{cart.length}</span></h2></div><button className="close" onClick={onClose}>×</button></div><div className="cart-items">{cart.length===0?<div className="empty"><span>◇</span><h3>Your cart is beautifully empty.</h3><p>Add a premium system to get started.</p></div>:cart.map(p=><div className="cart-item" key={p.id}><img src={p.image}/><div><b>{p.name}</b><span>{money(p.price)}</span></div><button onClick={()=>setCart(c=>c.filter(x=>x.id!==p.id))}>Remove</button></div>)}</div><div className="cart-footer"><div className="cart-total"><span>Total</span><b>{money(total)}</b></div><button className="btn dark full" onClick={()=>alert('Connect your preferred checkout URL in the store configuration to activate payments.')}>Continue to checkout ↗</button><small>Secure checkout URL can be connected to Payhip, Lemon Squeezy, Shopify or another provider.</small></div></motion.aside></motion.div>}
+function CartDrawer({cart,setCart,total,onClose}){return <motion.div className="cart-layer" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.aside className="cart-drawer" initial={{x:'100%'}} animate={{x:0}} exit={{x:'100%'}} transition={{type:'spring',stiffness:240,damping:28}}><div className="cart-head"><div><p className="kicker">Your collection</p><h2>Cart <span>{cart.length}</span></h2></div><button className="close" onClick={onClose}>×</button></div><div className="cart-items">{cart.length===0?<div className="empty"><span>◇</span><h3>Your cart is beautifully empty.</h3><p>Add a premium system to get started.</p></div>:cart.map(p=><div className="cart-item" key={p.id}><img src={p.image}/><div><b>{p.name}</b><span>{money(p.price)}</span></div><button onClick={()=>setCart(c=>c.filter(x=>x.id!==p.id))}>Remove</button></div>)}</div><div className="cart-footer"><div className="cart-total"><span>Total</span><b>{money(total)}</b></div><button className="btn dark full" onClick={()=>{if(cart.length===1&&cart[0].checkoutUrl){window.location.href=cart[0].checkoutUrl}else{alert('Checkout links can be managed per product from Gippi Admin.')}}}>Continue to checkout ↗</button><small>Secure checkout URL can be connected to Payhip, Lemon Squeezy, Shopify or another provider.</small></div></motion.aside></motion.div>}
 
-function Footer(){return <footer><div className="footer-brand"><a className="brand" href="#top">Gippi<Sparkle/></a><p>Premium digital systems for brighter work.</p></div><div><b>Explore</b><a href="#collection">Shop</a><a href="#bundle">Complete suite</a><a href="#why">Why Gippi</a></div><div><b>Discover</b><a href="./collections/business-tools/">Business tools</a><a href="./collections/productivity-planners/">Productivity systems</a><a href="./collections/creative-templates/">Creative templates</a><a href="./collections/career-tools/">Career tools</a></div><div><b>Support</b><a href="#faq">FAQ</a><a href="./guides/best-digital-business-tools/">Guides</a><a href="#faq">Digital delivery</a></div><div className="footer-bottom"><span>© 2026 Gippi</span><span>Designed for digital-first business.</span></div></footer>}
+function Footer({socials}){return <footer><div className="footer-brand"><a className="brand" href="#top">Gippi<Sparkle/></a><p>Premium digital systems for brighter work.</p>{socials?.length>0&&<div className="social-links" aria-label="Gippi social media">{socials.map(s=><a key={s.id||s.platform} href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.label||s.platform}><span>{(s.label||s.platform||'?').slice(0,1).toUpperCase()}</span>{s.label||s.platform}</a>)}</div>}</div><div><b>Explore</b><a href="#collection">Shop</a><a href="#bundle">Complete suite</a><a href="#why">Why Gippi</a></div><div><b>Discover</b><a href="./collections/business-tools/">Business tools</a><a href="./collections/productivity-planners/">Productivity systems</a><a href="./collections/creative-templates/">Creative templates</a><a href="./collections/career-tools/">Career tools</a></div><div><b>Support</b><a href="#faq">FAQ</a><a href="./guides/best-digital-business-tools/">Guides</a><a href="#faq">Digital delivery</a></div><div className="footer-bottom"><span>© 2026 Gippi</span><span>Designed for digital-first business.</span></div></footer>}
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>)

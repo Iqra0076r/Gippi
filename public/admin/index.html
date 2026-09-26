@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Gippi Studio</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="admin-brand" href="../"><span>Gippi</span><i>✦</i></a>
+    <p class="studio-label">Private Studio</p>
+    <nav id="adminNav" class="admin-nav hidden">
+      <button data-view="overview" class="active">Overview</button>
+      <button data-view="products">Products</button>
+      <button data-view="socials">Social links</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <span id="adminEmail"></span>
+      <button id="signOutBtn" class="text-btn hidden">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <div id="notice" class="notice hidden"></div>
+
+    <section id="authView" class="auth-view">
+      <div class="auth-card">
+        <p class="eyebrow">Gippi private administration</p>
+        <h1>Manage the store.</h1>
+        <p class="muted">Sign in with your private admin account. This page is not linked from the public website.</p>
+        <div class="auth-tabs">
+          <button id="showSignIn" class="active">Sign in</button>
+          <button id="showSignUp">Create account</button>
+        </div>
+        <form id="authForm">
+          <label>Email<input id="authEmail" type="email" autocomplete="email" required></label>
+          <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="8" required></label>
+          <button id="authSubmit" class="primary-btn" type="submit">Sign in</button>
+        </form>
+        <button id="forgotBtn" class="text-btn">Forgot password?</button>
+        <p id="authHelp" class="micro">Only the account that successfully claims the one-time Gippi admin code can edit the store.</p>
+      </div>
+    </section>
+
+    <section id="claimView" class="auth-view hidden">
+      <div class="auth-card">
+        <p class="eyebrow">One-time owner verification</p>
+        <h1>Claim Gippi Studio.</h1>
+        <p class="muted">Your account is signed in, but it is not yet the store owner. Enter the private one-time claim code supplied to you.</p>
+        <form id="claimForm">
+          <label>Owner claim code<input id="claimCode" type="password" autocomplete="off" required></label>
+          <button class="primary-btn" type="submit">Claim owner access</button>
+        </form>
+        <button id="claimSignOut" class="text-btn">Use another account</button>
+      </div>
+    </section>
+
+    <section id="adminView" class="hidden">
+      <header class="topbar">
+        <div><p class="eyebrow">Gippi Studio</p><h1 id="viewTitle">Overview</h1></div>
+        <button id="newProductBtn" class="primary-btn compact">+ Add product</button>
+      </header>
+
+      <div id="overviewView" class="panel-view">
+        <div class="metric-grid">
+          <article><span>Products</span><strong id="metricProducts">0</strong><small>Total catalog</small></article>
+          <article><span>Published</span><strong id="metricPublished">0</strong><small>Visible on store</small></article>
+          <article><span>Drafts</span><strong id="metricDrafts">0</strong><small>Hidden from buyers</small></article>
+          <article><span>Socials</span><strong id="metricSocials">0</strong><small>Active public links</small></article>
+        </div>
+        <div class="studio-card">
+          <div><p class="eyebrow">Live management</p><h2>Changes publish without editing website code.</h2></div>
+          <p>Titles, descriptions, images, prices, publishing status, checkout links and social profiles are stored in the backend and loaded by the storefront.</p>
+        </div>
+      </div>
+
+      <div id="productsView" class="panel-view hidden">
+        <div class="toolbar">
+          <input id="productSearch" type="search" placeholder="Search products">
+          <select id="productStatusFilter"><option value="all">All statuses</option><option value="published">Published</option><option value="draft">Draft</option></select>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Product</th><th>Category</th><th>Status</th><th>Price</th><th>Order</th><th></th></tr></thead><tbody id="productRows"></tbody></table>
+        </div>
+      </div>
+
+      <div id="socialsView" class="panel-view hidden">
+        <div class="section-action"><div><p class="eyebrow">Website social profiles</p><h2>Social links</h2></div><button id="addSocialBtn" class="secondary-btn">+ Add link</button></div>
+        <div id="socialList" class="social-admin-list"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<dialog id="productDialog">
+  <form id="productForm" method="dialog" class="editor-form">
+    <div class="dialog-head"><div><p class="eyebrow">Catalog editor</p><h2 id="productDialogTitle">Add product</h2></div><button type="button" id="closeProductDialog" class="round-btn">×</button></div>
+    <input type="hidden" id="productId">
+    <div class="form-grid two">
+      <label>Product title<input id="pTitle" required></label>
+      <label>Slug<input id="pSlug" required></label>
+      <label>Short title<input id="pShortTitle"></label>
+      <label>Eyebrow<input id="pEyebrow" placeholder="e.g. Operate smarter"></label>
+      <label>Category<input id="pCategory" required></label>
+      <label>Status<select id="pStatus"><option value="published">Published</option><option value="draft">Draft</option></select></label>
+      <label>Price (USD)<input id="pPrice" type="number" min="0" step="0.01" required></label>
+      <label>Compare-at price<input id="pCompareAt" type="number" min="0" step="0.01"></label>
+      <label>Sort order<input id="pSortOrder" type="number" step="1" value="0"></label>
+      <label>Checkout URL<input id="pCheckoutUrl" type="url" placeholder="https://..."></label>
+    </div>
+    <label>Tagline<input id="pTagline"></label>
+    <label>Description<textarea id="pDescription" rows="4"></textarea></label>
+    <label>Features <small>One feature per line</small><textarea id="pFeatures" rows="5"></textarea></label>
+
+    <div class="image-editor">
+      <div class="image-preview"><img id="pImagePreview" alt="Product preview"><span id="noImage">No image</span></div>
+      <div>
+        <label>Current image URL<input id="pImageUrl"></label>
+        <label>Image alt text<input id="pImageAlt"></label>
+        <label class="file-label">Upload new image<input id="pImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+        <p class="micro">PNG, JPG, WebP or GIF. Maximum 5 MB.</p>
+      </div>
+    </div>
+
+    <details class="seo-fields"><summary>SEO fields</summary>
+      <label>SEO title<input id="pSeoTitle"></label>
+      <label>SEO description<textarea id="pSeoDescription" rows="3"></textarea></label>
+      <label>SEO keywords<textarea id="pSeoKeywords" rows="3"></textarea></label>
+    </details>
+
+    <div class="dialog-actions">
+      <button type="button" id="deleteProductBtn" class="danger-btn hidden">Delete product</button>
+      <div class="grow"></div>
+      <button type="button" id="cancelProductBtn" class="secondary-btn">Cancel</button>
+      <button type="submit" class="primary-btn">Save product</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="socialDialog">
+  <form id="socialForm" method="dialog" class="editor-form compact-form">
+    <div class="dialog-head"><div><p class="eyebrow">Social profile</p><h2>Add social link</h2></div><button type="button" id="closeSocialDialog" class="round-btn">×</button></div>
+    <label>Platform<input id="sPlatform" placeholder="instagram" required></label>
+    <label>Display label<input id="sLabel" placeholder="Instagram" required></label>
+    <label>Profile URL<input id="sUrl" type="url" placeholder="https://..." required></label>
+    <label>Sort order<input id="sSortOrder" type="number" value="100"></label>
+    <label class="check-row"><input id="sActive" type="checkbox" checked> Active on website</label>
+    <div class="dialog-actions"><div class="grow"></div><button type="button" id="cancelSocialBtn" class="secondary-btn">Cancel</button><button class="primary-btn" type="submit">Add link</button></div>
+  </form>
+</dialog>
+
+<script type="module" src="./admin.js"></script>
+</body></html>
