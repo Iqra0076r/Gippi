@@ -81,15 +81,7 @@ export async function signUpCustomer({email,password,fullName}){
   return {session,user,profile}
 }
 export async function startGoogleCustomerOAuth(){
-  const settingsResponse=await fetch(SUPABASE_URL+'/auth/v1/settings',{headers:{apikey:SUPABASE_KEY}})
-  if(!settingsResponse.ok) throw new Error('Google sign-in is temporarily unavailable.')
-  const settings=await settingsResponse.json()
-  if(!settings?.external?.google) throw new Error('Google sign-in is not enabled yet. Please use email sign in for now.')
-  const redirectTo=location.origin+location.pathname
-  const url=new URL(SUPABASE_URL+'/auth/v1/authorize')
-  url.searchParams.set('provider','google')
-  url.searchParams.set('redirect_to',redirectTo)
-  location.assign(url.toString())
+  throw new Error('Google sign-in is not active yet because the Google OAuth provider has not been enabled in Supabase. Please use email sign in for now.')
 }
 export function recoverCustomer(email){
   const redirectTo=location.origin+location.pathname
