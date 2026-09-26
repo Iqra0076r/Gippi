@@ -201,19 +201,7 @@ async function boot(){
   }catch(e){showNotice(e.message,true);setScreen('auth')}
 }
 $('adminGoogleBtn').onclick=async()=>{
-  try{
-    const settingsResponse=await fetch(SUPABASE_URL+'/auth/v1/settings',{headers:{apikey:SUPABASE_KEY}})
-    const settings=await settingsResponse.json()
-    if(!settingsResponse.ok||!settings?.external?.google){
-      showNotice('Google sign-in is not enabled in Supabase yet. Use email sign in for now.',true)
-      return
-    }
-    const redirectTo=location.origin+location.pathname
-    const url=new URL(SUPABASE_URL+'/auth/v1/authorize')
-    url.searchParams.set('provider','google')
-    url.searchParams.set('redirect_to',redirectTo)
-    location.assign(url.toString())
-  }catch(e){showNotice('Google sign-in is temporarily unavailable.',true)}
+  showNotice('Google sign-in is not active yet because the Google OAuth provider has not been enabled in Supabase. Use email sign in for now.',true)
 };
 $('showSignIn').onclick=()=>{authMode='signin';$('showSignIn').classList.add('active');$('showSignUp').classList.remove('active');$('authSubmit').textContent='Sign in';$('authHelp').textContent='Only the claimed Gippi owner account can edit the store.'};
 $('showSignUp').onclick=()=>{authMode='signup';$('showSignUp').classList.add('active');$('showSignIn').classList.remove('active');$('authSubmit').textContent='Create account';$('authHelp').textContent='Create your account, verify the email if prompted, then claim the store with your one-time owner code.'};
