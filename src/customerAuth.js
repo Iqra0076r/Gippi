@@ -72,7 +72,7 @@ export async function signInCustomer({email,password}){
 }
 export async function signUpCustomer({email,password,fullName}){
   const redirectTo=location.origin+location.pathname
-  const data=await authPost('/auth/v1/signup?redirect_to='+encodeURIComponent(redirectTo),{email,password,data:{full_name:fullName,source:'gippi-store'}})
+  const data=await authPost('/auth/v1/signup?redirect_to='+encodeURIComponent(redirectTo),{email,password,data:{full_name:fullName,source:'bingo-store'}})
   const session=normalizeSession(data)
   if(!session)return {session:null,user:data.user||null,profile:null}
   storeSession(session)
