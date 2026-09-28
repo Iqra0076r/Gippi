@@ -11,4 +11,4 @@ const encoded = (await Promise.all(parts.map((name) => readFile(path.join(partsD
 await writeFile(archive, Buffer.from(encoded.trim(), 'base64'))
 execFileSync('tar', ['-xzf', archive, '-C', root], { stdio: 'inherit' })
 await unlink(archive)
-console.log('Gippi React source and product artwork materialized.')
+console.log('Bingo React source and product artwork materialized.')
