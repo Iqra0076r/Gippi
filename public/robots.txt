@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /Gippi/admin/
+Disallow: /__KEEP_BINGO_PATH__/admin/
 
-Sitemap: https://iqra0076r.github.io/Gippi/sitemap.xml\nSitemap: https://hlmndkgflgutbigsxoml.supabase.co/functions/v1/gippi-sitemap\n
+Sitemap: https://iqra0076r.github.io/__KEEP_BINGO_PATH__/sitemap.xml\nSitemap: https://hlmndkgflgutbigsxoml.supabase.co/functions/v1/gippi-sitemap\n
