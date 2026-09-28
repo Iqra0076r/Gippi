@@ -5,7 +5,7 @@ import path from 'node:path'
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
 const partsDir = path.join(root, 'payload-parts')
-const archive = path.join(root, '.gippi-store.tar.gz')
+const archive = path.join(root, '.bingo-store.tar.gz')
 const parts = (await readdir(partsDir)).filter((name) => /^part-\d+\.txt$/.test(name)).sort()
 const encoded = (await Promise.all(parts.map((name) => readFile(path.join(partsDir, name), 'utf8')))).join('')
 await writeFile(archive, Buffer.from(encoded.trim(), 'base64'))
