@@ -1,15 +1,15 @@
 {
-  "name": "Gippi Premium Digital Products",
-  "short_name": "Gippi",
+  "name": "Bingo Premium Digital Products",
+  "short_name": "Bingo",
   "description": "Premium digital templates, planners, business systems and creator tools.",
-  "start_url": "/Gippi/",
-  "scope": "/Gippi/",
+  "start_url": "/__KEEP_BINGO_PATH__/",
+  "scope": "/__KEEP_BINGO_PATH__/",
   "display": "standalone",
   "background_color": "#f7f0e7",
   "theme_color": "#f7f0e7",
   "icons": [
     {
-      "src": "/Gippi/favicon.svg",
+      "src": "/__KEEP_BINGO_PATH__/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
