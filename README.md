@@ -1,5 +1,5 @@
-# Gippi NextGen Store
-Premium React storefront for the Gippi digital product collection.
+# Bingo NextGen Store
+Premium React storefront for the Bingo digital product collection.
 
 ## Stack
 - React 19.3
