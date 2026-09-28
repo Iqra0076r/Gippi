@@ -51,7 +51,7 @@ function App(){
       if(!active) return
       if(result?.user) setCustomer(result.user)
       if(result?.profile) setCustomerProfile(result.profile)
-      if(result?.oauthCompleted){ setAccountOpen(true); setAuthNotice('Welcome to Gippi. Your Google account is connected.') }
+      if(result?.oauthCompleted){ setAccountOpen(true); setAuthNotice('Welcome to Bingo. Your Google account is connected.') }
       if(result?.error){ setAuthNotice(result.error) }
     }).catch(()=>{})
     return ()=>{active=false}
@@ -65,7 +65,7 @@ function App(){
         if(Array.isArray(dbProducts)&&dbProducts.length) setCatalog(dbProducts.map(fromDbProduct))
         if(Array.isArray(dbSocials)) setSocials(dbSocials)
       }catch(error){
-        console.warn('Gippi backend unavailable; using bundled catalog.',error)
+        console.warn('Bingo backend unavailable; using bundled catalog.',error)
       }
     })()
     return ()=>{cancelled=true}
@@ -85,10 +85,10 @@ function App(){
     <div className="ambient ambient-a"/><div className="ambient ambient-b"/>
     <Announcement/>
     <header className="nav glass">
-      <a className="brand" href="#top" aria-label="Gippi home">Gippi<Sparkle/></a>
+      <a className="brand" href="#top" aria-label="Bingo home">Bingo<Sparkle/></a>
       <nav className={menu?'navlinks open':'navlinks'}>
         <a href="#collection" onClick={()=>setMenu(false)}>Shop</a>
-        <a href="#why" onClick={()=>setMenu(false)}>Why Gippi</a>
+        <a href="#why" onClick={()=>setMenu(false)}>Why Bingo</a>
         <a href="#bundle" onClick={()=>setMenu(false)}>Bundle</a>
         <a href="#faq" onClick={()=>setMenu(false)}>FAQ</a>
       </nav>
@@ -106,7 +106,7 @@ function App(){
       <ValueRibbon/>
       <section className="collection section" id="collection">
         <div className="section-head">
-          <div><p className="kicker">The Gippi collection</p><h2>Digital products that feel like <em>premium software.</em></h2></div>
+          <div><p className="kicker">The Bingo collection</p><h2>Digital products that feel like <em>premium software.</em></h2></div>
           <p className="section-copy">Not filler. Not basic downloads. Each system combines structure, design, automation and practical depth.</p>
         </div>
         <div className="shop-tools glass-soft">
@@ -130,7 +130,7 @@ function App(){
     <Footer socials={socials}/>
     <AnimatePresence>{quick&&<QuickView p={quick} onClose={()=>setQuick(null)} onAdd={()=>add(quick)}/>}</AnimatePresence>
     <AnimatePresence>{cartOpen&&<CartDrawer cart={cart} setCart={setCart} total={total} onClose={()=>setCartOpen(false)}/>}</AnimatePresence>
-    <AnimatePresence>{accountOpen&&<AccountModal customer={customer} profile={customerProfile} notice={authNotice} onClose={()=>{setAccountOpen(false);setAuthNotice('')}} onSignedIn={(result)=>{setCustomer(result.user||null);setCustomerProfile(result.profile||null);setAuthNotice('Welcome back to Gippi.')}} onSignedOut={()=>{setCustomer(null);setCustomerProfile(null);setAuthNotice('')}}/>}</AnimatePresence>
+    <AnimatePresence>{accountOpen&&<AccountModal customer={customer} profile={customerProfile} notice={authNotice} onClose={()=>{setAccountOpen(false);setAuthNotice('')}} onSignedIn={(result)=>{setCustomer(result.user||null);setCustomerProfile(result.profile||null);setAuthNotice('Welcome back to Bingo.')}} onSignedOut={()=>{setCustomer(null);setCustomerProfile(null);setAuthNotice('')}}/>}</AnimatePresence>
   </div>
 }
 
@@ -153,10 +153,10 @@ function Hero({onExplore}){
       <div className="mini-proof"><span>8 flagship systems</span><span>Instant access</span><span>Global digital delivery</span></div>
     </div>
     <motion.div className="hero-stage" style={{rotateX:rx,rotateY:ry,transformPerspective:1000}}>
-      <motion.div className="hero-card hero-main" initial={{opacity:0,scale:.94,y:24}} animate={{opacity:1,scale:1,y:0}} transition={{duration:.7}}><img src="./products/business-command.svg" alt="Business spreadsheet dashboard template and CRM system by Gippi" width="800" height="1000" fetchPriority="high" decoding="async"/></motion.div>
+      <motion.div className="hero-card hero-main" initial={{opacity:0,scale:.94,y:24}} animate={{opacity:1,scale:1,y:0}} transition={{duration:.7}}><img src="./products/business-command.svg" alt="Business spreadsheet dashboard template and CRM system by Bingo" width="800" height="1000" fetchPriority="high" decoding="async"/></motion.div>
       <motion.div className="hero-card hero-float one" animate={{y:[0,-14,0],rotate:[-8,-5,-8]}} transition={{duration:5,repeat:Infinity,ease:'easeInOut'}}><img src="./products/content-empire.svg" alt="Editable Canva business template bundle for creators" width="800" height="1000" decoding="async"/></motion.div>
       <motion.div className="hero-card hero-float two" animate={{y:[0,12,0],rotate:[8,5,8]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}><img src="./products/life-os.svg" alt="Premium digital planner and printable life organization system" width="800" height="1000" decoding="async"/></motion.div>
-      <div className="orbit-badge"><b>Gippi</b><span>premium digital systems</span></div>
+      <div className="orbit-badge"><b>Bingo</b><span>premium digital systems</span></div>
     </motion.div>
   </section>
 }
@@ -187,7 +187,7 @@ function EditorialBreak(){return <section className="editorial section">
 </section>}
 
 function Why(){return <section id="why" className="why section">
-  <div className="section-head"><div><p className="kicker">Why Gippi</p><h2>Luxury aesthetics.<br/><em>Serious utility.</em></h2></div><p className="section-copy">The visual polish gets attention. The structure keeps the product useful long after purchase.</p></div>
+  <div className="section-head"><div><p className="kicker">Why Bingo</p><h2>Luxury aesthetics.<br/><em>Serious utility.</em></h2></div><p className="section-copy">The visual polish gets attention. The structure keeps the product useful long after purchase.</p></div>
   <div className="feature-bento">
     <div className="bento large"><span>✦</span><h3>One coherent design language</h3><p>Cream, ink, violet and lime create a recognizable premium identity across every product.</p></div>
     <div className="bento"><span>⌁</span><h3>Built for real workflows</h3><p>Dashboards, trackers, planners and systems that reduce friction.</p></div>
@@ -198,7 +198,7 @@ function Why(){return <section id="why" className="why section">
 
 function Bundle({addAll}){return <section id="bundle" className="bundle section">
   <div className="bundle-art"><div className="stack s1"><img src="./products/content-empire.svg"/></div><div className="stack s2"><img src="./products/business-command.svg"/></div><div className="stack s3"><img src="./products/course-creator.svg"/></div></div>
-  <div className="bundle-copy"><p className="kicker">The complete Gippi collection</p><h2>One purchase.<br/><em>Eight premium systems.</em></h2><p>Build your business, organize your life, publish content, launch courses, manage your career and create faster—with one cohesive digital toolkit.</p><div className="bundle-price"><b>$149</b><s>$521 combined value</s></div><button className="btn dark" onClick={addAll}>Add complete collection <span>↗</span></button></div>
+  <div className="bundle-copy"><p className="kicker">The complete Bingo collection</p><h2>One purchase.<br/><em>Eight premium systems.</em></h2><p>Build your business, organize your life, publish content, launch courses, manage your career and create faster—with one cohesive digital toolkit.</p><div className="bundle-price"><b>$149</b><s>$521 combined value</s></div><button className="btn dark" onClick={addAll}>Add complete collection <span>↗</span></button></div>
 </section>}
 
 function SeoDiscovery({onPick}){return <section className="seo-discovery section" aria-labelledby="shop-by-workflow">
@@ -218,7 +218,7 @@ function SeoDiscovery({onPick}){return <section className="seo-discovery section
 
 function FAQ(){const items=[['How are products delivered?','Digitally, immediately after purchase through the checkout provider connected to the store.'],['Can I edit the files?','Where a product is designed to be editable, the package includes editable formats or clear access instructions.'],['Can I resell the original files?','No. Standard products are licensed for personal and internal business use unless a product-specific commercial license says otherwise.'],['Do I need special software?','Each product clearly identifies its compatible software before purchase. Many include PDF, spreadsheet or editable-template formats.']];return <section id="faq" className="faq section"><p className="kicker">Questions, answered</p><h2>Everything you need to know.</h2><div className="faq-list">{items.map(([q,a])=><details key={q}><summary>{q}<span>+</span></summary><p>{a}</p></details>)}</div></section>}
 
-function Newsletter(){return <section className="newsletter section"><div><p className="kicker">Gippi dispatch</p><h2>New systems. Better workflows.<br/><em>Zero clutter.</em></h2></div><form onSubmit={e=>e.preventDefault()}><input type="email" placeholder="Email address" aria-label="Email address"/><button className="btn primary">Join the list ↗</button></form></section>}
+function Newsletter(){return <section className="newsletter section"><div><p className="kicker">Bingo dispatch</p><h2>New systems. Better workflows.<br/><em>Zero clutter.</em></h2></div><form onSubmit={e=>e.preventDefault()}><input type="email" placeholder="Email address" aria-label="Email address"/><button className="btn primary">Join the list ↗</button></form></section>}
 
 function socialGlyph(platform=''){
   const p=platform.toLowerCase()
@@ -232,11 +232,11 @@ function socialGlyph(platform=''){
   return '↗'
 }
 
-function ReachUs({socials}){if(!socials?.length)return null;return <section className="reach-us section" id="reach-us"><div><p className="kicker">Reach us</p><h2>Follow Gippi beyond the store.</h2><p>Product drops, new systems and practical creative-business ideas. Social profiles open in a new tab.</p></div><div className="reach-socials">{socials.map(s=><a key={s.id||s.platform} href={s.url} target="_blank" rel="noopener noreferrer"><span>{socialGlyph(s.platform)}</span><div><b>{s.label||s.platform}</b><small>Open profile ↗</small></div></a>)}</div></section>}
+function ReachUs({socials}){if(!socials?.length)return null;return <section className="reach-us section" id="reach-us"><div><p className="kicker">Reach us</p><h2>Follow Bingo beyond the store.</h2><p>Product drops, new systems and practical creative-business ideas. Social profiles open in a new tab.</p></div><div className="reach-socials">{socials.map(s=><a key={s.id||s.platform} href={s.url} target="_blank" rel="noopener noreferrer"><span>{socialGlyph(s.platform)}</span><div><b>{s.label||s.platform}</b><small>Open profile ↗</small></div></a>)}</div></section>}
 
 function QuickView({p,onClose,onAdd}){const [img,setImg]=useState(p.gallery[0]);return <motion.div className="modal-backdrop" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.div className="quick-modal" initial={{opacity:0,y:24,scale:.98}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:20,scale:.98}}><button className="close" onClick={onClose}>×</button><div className="quick-gallery"><img className="quick-main" src={img} alt={p.name}/>{p.gallery.length>1&&<div className="thumbs">{p.gallery.map(g=><button key={g} className={img===g?'active':''} onClick={()=>setImg(g)}><img src={g}/></button>)}</div>}</div><div className="quick-copy"><p className="eyebrow">{p.eyebrow}</p><h2>{p.name}</h2><p className="lead">{p.description}</p><ul>{p.features.map(f=><li key={f}>✓ {f}</li>)}</ul><div className="quick-buy"><div><b>{money(p.price)}</b>{p.compareAt!=null&&<s>{money(p.compareAt)}</s>}</div><button className="btn dark" onClick={onAdd}>Add to cart</button></div><small>Digital product · instant delivery after checkout</small></div></motion.div></motion.div>}
 
-function CartDrawer({cart,setCart,total,onClose}){return <motion.div className="cart-layer" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.aside className="cart-drawer" initial={{x:'100%'}} animate={{x:0}} exit={{x:'100%'}} transition={{type:'spring',stiffness:240,damping:28}}><div className="cart-head"><div><p className="kicker">Your collection</p><h2>Cart <span>{cart.length}</span></h2></div><button className="close" onClick={onClose}>×</button></div><div className="cart-items">{cart.length===0?<div className="empty"><span>◇</span><h3>Your cart is beautifully empty.</h3><p>Add a premium system to get started.</p></div>:cart.map(p=><div className="cart-item" key={p.id}><img src={p.image}/><div><b>{p.name}</b><span>{money(p.price)}</span></div><button onClick={()=>setCart(c=>c.filter(x=>x.id!==p.id))}>Remove</button></div>)}</div><div className="cart-footer"><div className="cart-total"><span>Total</span><b>{money(total)}</b></div><button className="btn dark full" onClick={()=>{if(cart.length===1&&cart[0].checkoutUrl){window.open(cart[0].checkoutUrl,'_blank','noopener,noreferrer')}else{alert('Checkout links can be managed per product from Gippi Admin.')}}}>Continue to checkout ↗</button><small>Secure checkout URL can be connected to Payhip, Lemon Squeezy, Shopify or another provider.</small></div></motion.aside></motion.div>}
+function CartDrawer({cart,setCart,total,onClose}){return <motion.div className="cart-layer" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}><motion.aside className="cart-drawer" initial={{x:'100%'}} animate={{x:0}} exit={{x:'100%'}} transition={{type:'spring',stiffness:240,damping:28}}><div className="cart-head"><div><p className="kicker">Your collection</p><h2>Cart <span>{cart.length}</span></h2></div><button className="close" onClick={onClose}>×</button></div><div className="cart-items">{cart.length===0?<div className="empty"><span>◇</span><h3>Your cart is beautifully empty.</h3><p>Add a premium system to get started.</p></div>:cart.map(p=><div className="cart-item" key={p.id}><img src={p.image}/><div><b>{p.name}</b><span>{money(p.price)}</span></div><button onClick={()=>setCart(c=>c.filter(x=>x.id!==p.id))}>Remove</button></div>)}</div><div className="cart-footer"><div className="cart-total"><span>Total</span><b>{money(total)}</b></div><button className="btn dark full" onClick={()=>{if(cart.length===1&&cart[0].checkoutUrl){window.open(cart[0].checkoutUrl,'_blank','noopener,noreferrer')}else{alert('Checkout links can be managed per product from Bingo Admin.')}}}>Continue to checkout ↗</button><small>Secure checkout URL can be connected to Payhip, Lemon Squeezy, Shopify or another provider.</small></div></motion.aside></motion.div>}
 
 
 function GoogleMark(){return <svg aria-hidden viewBox="0 0 24 24"><path fill="#4285F4" d="M21.8 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5a4.7 4.7 0 0 1-2 3.1v2.6h3.2c1.9-1.8 3.1-4.4 3.1-7.5Z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.7-2.3l-3.2-2.6c-.9.6-2 1-3.5 1-2.6 0-4.8-1.8-5.6-4.2H3.1v2.6A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9l3.3-2.6Z"/><path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.8A9.7 9.7 0 0 0 3.1 7.5l3.3 2.6C7.2 7.7 9.4 5.9 12 5.9Z"/></svg>}
@@ -254,7 +254,7 @@ function AccountModal({customer,profile,notice,onClose,onSignedIn,onSignedOut}){
     try{
       if(mode==='signup'){
         const result=await signUpCustomer({email,password,fullName:name})
-        if(result.session){onSignedIn(result);setMessage('Your Gippi account is ready.')}
+        if(result.session){onSignedIn(result);setMessage('Your Bingo account is ready.')}
         else setMessage('Account created. Check your email to confirm it, then sign in.')
       }else{
         const result=await signInCustomer({email,password})
@@ -271,11 +271,11 @@ function AccountModal({customer,profile,notice,onClose,onSignedIn,onSignedOut}){
   return <motion.div className="modal-backdrop account-layer" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onMouseDown={e=>e.target===e.currentTarget&&onClose()}>
     <motion.div className="account-modal" initial={{opacity:0,y:24,scale:.98}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:18,scale:.98}}>
       <button className="close" onClick={onClose}>×</button>
-      <div className="account-brand-panel"><a className="brand">Gippi<Sparkle/></a><div><p className="kicker">Your Gippi account</p><h2>Save your place in a brighter digital workspace.</h2><p>Sign in for a more personal store experience and a foundation for purchases, downloads and future customer tools.</p></div><div className="account-trust"><span>Secure Supabase authentication</span><span>Google or email access</span><span>Your account data stays protected</span></div></div>
+      <div className="account-brand-panel"><a className="brand">Bingo<Sparkle/></a><div><p className="kicker">Your Bingo account</p><h2>Save your place in a brighter digital workspace.</h2><p>Sign in for a more personal store experience and a foundation for purchases, downloads and future customer tools.</p></div><div className="account-trust"><span>Secure Supabase authentication</span><span>Google or email access</span><span>Your account data stays protected</span></div></div>
       <div className="account-form-panel">
         {customer?<div className="account-profile">
           <div className="profile-avatar">{profile?.avatar_url?<img src={profile.avatar_url} alt=""/>:<span>{(profile?.full_name||customer.email||'G').slice(0,1).toUpperCase()}</span>}</div>
-          <p className="eyebrow">Signed in</p><h3>{profile?.full_name||'Welcome to Gippi'}</h3><p>{customer.email}</p>
+          <p className="eyebrow">Signed in</p><h3>{profile?.full_name||'Welcome to Bingo'}</h3><p>{customer.email}</p>
           <div className="profile-meta"><span>Provider <b>{profile?.provider||customer.app_metadata?.provider||'email'}</b></span><span>Account <b>Active</b></span></div>
           <button className="btn dark full" disabled={busy} onClick={logout}>Sign out</button>
         </div>:<>
@@ -286,17 +286,17 @@ function AccountModal({customer,profile,notice,onClose,onSignedIn,onSignedOut}){
             {mode==='signup'&&<label>Full name<input value={name} onChange={e=>setName(e.target.value)} autoComplete="name" placeholder="Your name" required/></label>}
             <label>Email address<input type="email" value={email} onChange={e=>setEmail(e.target.value)} autoComplete="email" placeholder="you@example.com" required/></label>
             <label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} autoComplete={mode==='signup'?'new-password':'current-password'} minLength="8" placeholder="8+ characters" required/></label>
-            <button className="btn primary full" disabled={busy}>{busy?'Please wait…':mode==='signup'?'Create Gippi account':'Sign in to Gippi'}</button>
+            <button className="btn primary full" disabled={busy}>{busy?'Please wait…':mode==='signup'?'Create Bingo account':'Sign in to Bingo'}</button>
           </form>
           {mode==='signin'&&<button className="forgot-link" onClick={forgot}>Forgot your password?</button>}
           {message&&<p className="auth-message">{message}</p>}
-          <p className="account-terms">By continuing, you agree to use Gippi responsibly. We never expose your password to the storefront.</p>
+          <p className="account-terms">By continuing, you agree to use Bingo responsibly. We never expose your password to the storefront.</p>
         </>}
       </div>
     </motion.div>
   </motion.div>
 }
 
-function Footer({socials}){return <footer><div className="footer-brand"><a className="brand" href="#top">Gippi<Sparkle/></a><p>Premium digital systems for brighter work.</p>{socials?.length>0&&<div className="social-links" aria-label="Gippi social media">{socials.map(s=><a key={s.id||s.platform} href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.label||s.platform}><span>{(s.label||s.platform||'?').slice(0,1).toUpperCase()}</span>{s.label||s.platform}</a>)}</div>}</div><div><b>Explore</b><a href="#collection">Shop</a><a href="#bundle">Complete suite</a><a href="#why">Why Gippi</a></div><div><b>Discover</b><a href="./collections/business-tools/">Business tools</a><a href="./collections/productivity-planners/">Productivity systems</a><a href="./collections/creative-templates/">Creative templates</a><a href="./collections/career-tools/">Career tools</a></div><div><b>Support</b><a href="#faq">FAQ</a><a href="./guides/best-digital-business-tools/">Guides</a><a href="#faq">Digital delivery</a></div><div className="footer-bottom"><span>© 2026 Gippi</span><span>Designed for digital-first business.</span></div></footer>}
+function Footer({socials}){return <footer><div className="footer-brand"><a className="brand" href="#top">Bingo<Sparkle/></a><p>Premium digital systems for brighter work.</p>{socials?.length>0&&<div className="social-links" aria-label="Bingo social media">{socials.map(s=><a key={s.id||s.platform} href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.label||s.platform}><span>{(s.label||s.platform||'?').slice(0,1).toUpperCase()}</span>{s.label||s.platform}</a>)}</div>}</div><div><b>Explore</b><a href="#collection">Shop</a><a href="#bundle">Complete suite</a><a href="#why">Why Bingo</a></div><div><b>Discover</b><a href="./collections/business-tools/">Business tools</a><a href="./collections/productivity-planners/">Productivity systems</a><a href="./collections/creative-templates/">Creative templates</a><a href="./collections/career-tools/">Career tools</a></div><div><b>Support</b><a href="#faq">FAQ</a><a href="./guides/best-digital-business-tools/">Guides</a><a href="#faq">Digital delivery</a></div><div className="footer-bottom"><span>© 2026 Bingo</span><span>Designed for digital-first business.</span></div></footer>}
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>)
