@@ -1,4 +1,4 @@
-name: Deploy Gippi to GitHub Pages
+name: Deploy Bingo to GitHub Pages
 
 on:
   push:
