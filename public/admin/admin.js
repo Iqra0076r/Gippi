@@ -203,7 +203,7 @@ async function boot(){
 $('adminGoogleBtn').onclick=async()=>{
   showNotice('Google sign-in is not active yet because the Google OAuth provider has not been enabled in Supabase. Use email sign in for now.',true)
 };
-$('showSignIn').onclick=()=>{authMode='signin';$('showSignIn').classList.add('active');$('showSignUp').classList.remove('active');$('authSubmit').textContent='Sign in';$('authHelp').textContent='Only the claimed Gippi owner account can edit the store.'};
+$('showSignIn').onclick=()=>{authMode='signin';$('showSignIn').classList.add('active');$('showSignUp').classList.remove('active');$('authSubmit').textContent='Sign in';$('authHelp').textContent='Only the claimed Bingo owner account can edit the store.'};
 $('showSignUp').onclick=()=>{authMode='signup';$('showSignUp').classList.add('active');$('showSignIn').classList.remove('active');$('authSubmit').textContent='Create account';$('authHelp').textContent='Create your account, verify the email if prompted, then claim the store with your one-time owner code.'};
 $('authForm').onsubmit=async e=>{
   e.preventDefault();const email=$('authEmail').value.trim(),password=$('authPassword').value;
